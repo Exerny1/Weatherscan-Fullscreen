@@ -2,34 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="refresh" content="900"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Weatherscan Manassas</title>
     <style>
-        /* This removes all borders and scrollbars */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            background-color: black;
-        }
-
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: black; }
         iframe {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             border: none;
-            
-            /* THIS IS THE MAGIC: It forces the 4:3 video to 
-               stretch and fill your entire phone screen */
-            object-fit: fill; 
+            object-fit: fill;
         }
     </style>
 </head>
 <body>
-    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+    <iframe src="https://v2.weatherscan.net/?Manassas" loading="lazy"></iframe>
 </body>
 </html>
