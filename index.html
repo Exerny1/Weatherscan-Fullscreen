@@ -1,32 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeatherScan Fix</title>
     <style>
-        /* Force everything to be transparent EXCEPT the iframe */
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            background-color: transparent !important; 
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+            background-color: black;
         }
 
-        iframe {
+        /* This forces the website into a background "container" */
+        #bg-layer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: -1; /* Keeps it behind everything */
+            pointer-events: none; /* Stops the TV from trying to "click" things inside it */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            z-index: 9999; /* Force it to the VERY front */
         }
     </style>
 </head>
 <body>
-    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+
+    <div id="bg-layer">
+        <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+    </div>
+
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:1;"></div>
+
 </body>
 </html>
