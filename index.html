@@ -14,19 +14,30 @@
             overflow: hidden; 
             background-color: black; 
         }
-        iframe {
-            position: absolute;
+
+        /* This is the logic from the Replit project */
+        .wallpaper {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        iframe {
             width: 100%;
             height: 100%;
             border: none;
-            /* This ensures it stretches to fit the specific screen size of your device */
-            object-fit: fill; 
+            display: block;
         }
     </style>
 </head>
 <body>
-    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+
+    <div class="wallpaper">
+        <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+    </div>
+
 </body>
 </html>
