@@ -1,17 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="7200"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Weatherscan 16:9 HD</title>
     <style>
-        /* Transparent body so NO background color can hide the iframe */
+        /* 1. Reset the environment */
         html, body { 
             margin: 0; 
             padding: 0; 
             width: 100vw; 
             height: 100vh; 
             overflow: hidden; 
-            background: transparent !important; 
+            background-color: black; 
+            /* Hides the mouse cursor automatically after inactivity */
+            cursor: none;
         }
 
+        /* 2. The Hardware-Accelerated Iframe */
         iframe {
             position: fixed;
             top: 0;
@@ -19,14 +26,35 @@
             width: 100%;
             height: 100%;
             border: none;
-            /* This 'transform' line forces the TV to use its graphics chip 
-               differently, which can sometimes "wake up" a black screen */
+            
+            /* FORCING THE STRETCH TO 16:9 */
+            object-fit: fill; 
+
+            /* HARDWARE ACCELERATION HACK: 
+               Forces the TV's GPU to keep the graphics "awake" */
             transform: translateZ(0);
+            -webkit-transform: translateZ(0);
             will-change: transform;
+        }
+
+        /* 3. Extra Stability Layer */
+        #shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background: transparent;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
+
+    <div id="shield"></div>
+
     <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+
 </body>
 </html>
