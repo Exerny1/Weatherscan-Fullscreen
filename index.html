@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="7200"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Weatherscan 16:9 HD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherScan Stretched</title>
     <style>
-        /* 1. Reset the environment */
         html, body { 
             margin: 0; 
             padding: 0; 
@@ -14,47 +12,49 @@
             height: 100vh; 
             overflow: hidden; 
             background-color: black; 
-            /* Hides the mouse cursor automatically after inactivity */
             cursor: none;
         }
 
-        /* 2. The Hardware-Accelerated Iframe */
-        iframe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            
-            /* FORCING THE STRETCH TO 16:9 */
-            object-fit: fill; 
-
-            /* HARDWARE ACCELERATION HACK: 
-               Forces the TV's GPU to keep the graphics "awake" */
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-            will-change: transform;
+        #wrapper {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* 3. Extra Stability Layer */
-        #shield {
+        iframe {
+            /* We set the initial size to a standard 4:3 ratio base */
+            width: 100vw;
+            height: 100vh;
+            border: none;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            background: transparent;
-            pointer-events: none;
+
+            /* THE STRETCH LOGIC */
+            /* scaleX(1.33) stretches the width by 33% to fill 16:9 */
+            /* translateZ(0) keeps your hardware acceleration active */
+            transform: scaleX(1.34) translateZ(0);
+            transform-origin: center;
+            
+            /* Ensures the browser doesn't try to be "smart" and maintain aspect ratio */
+            object-fit: fill;
         }
     </style>
 </head>
 <body>
 
-    <div id="shield"></div>
+    <div id="wrapper">
+        <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
+    </div>
 
-    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+    <script>
+        // Silent refresh every 60 minutes to prevent the lag/crash
+        setInterval(function() {
+            var iframe = document.getElementById('weather-frame');
+            iframe.src = iframe.src;
+        }, 3600000); 
+    </script>
 
 </body>
 </html>
