@@ -1,61 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
+        /* Keeping it transparent to prevent the "Black Background" takeover */
         html, body { 
-            margin: 0; padding: 0; 
-            width: 100vw; height: 100vh; 
+            margin: 0; 
+            padding: 0; 
+            width: 100vw; 
+            height: 100vh; 
             overflow: hidden; 
-            background: #000; 
-        }
-
-        #viewport-fix {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-            /* Forces iOS to create a single, simple composite layer */
-            -webkit-transform: translateZ(0);
+            background: transparent !important; 
         }
 
         iframe {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             border: none;
-
-            /* 1. THE STRETCH */
-            transform: scale(1.34, 1.0) translateZ(0);
-            transform-origin: center;
-
-            /* 2. PERFORMANCE THROTTLE */
-            /* This '0.99' trick is a lifesaver for iPhone 7 crashes. 
-               It prevents the browser from trying to blend layers. */
-            opacity: 0.99;
             
-            /* 3. BARE MINIMUM GRAPHICS */
-            image-rendering: -webkit-optimize-contrast;
+            /* THE MAGIC COMBO */
+            /* 1. translateZ(0) - The hack that fixed your black screen/refresh */
+            /* 2. scaleX(1.34) - The 16:9 stretch */
+            transform: translateZ(0) scaleX(1.34);
+            transform-origin: center;
+            
+            /* 3. PERFORMANCE THROTTLE */
+            /* Tells the GPU to ignore 'smoothing' pixels, 
+               which is the #1 cause of lag on the iPhone 7 */
             image-rendering: pixelated;
+            
+            /* 4. SHIELD STABILITY */
+            /* Tells the browser this layer is 'static', 
+               preventing the Shield from over-calculating animations */
+            will-change: transform;
         }
     </style>
 </head>
 <body>
-    <div id="viewport-fix">
-        <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
-    </div>
-
-    <script>
-        // Emergency Memory Flush
-        // Since the iPhone 7 crashes 'midway', we refresh it silently 
-        // every 15 minutes to dump the accumulated memory (RAM leak).
-        setInterval(function() {
-            const frame = document.getElementById('weather-frame');
-            frame.src = frame.src;
-        }, 900000); 
-    </script>
+    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
 </body>
 </html>
