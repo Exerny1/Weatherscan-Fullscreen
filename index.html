@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeatherScan Stretched</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WeatherScan HD Fixed</title>
     <style>
         html, body { 
             margin: 0; 
@@ -15,46 +15,38 @@
             cursor: none;
         }
 
-        #wrapper {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+
+            /* FORCED 16:9 STRETCH LOGIC */
+            object-fit: fill; 
+            transform: scaleX(1.34) translateZ(0);
+            transform-origin: center;
+
+            /* THE HARDWARE HACK - Keeps the TV GPU awake */
+            -webkit-transform: translateZ(0);
+            will-change: transform;
         }
 
-        iframe {
-            /* We set the initial size to a standard 4:3 ratio base */
-            width: 100vw;
-            height: 100vh;
-            border: none;
+        /* Invisible layer to block any browser 'popups' or hovers */
+        #shield {
             position: absolute;
             top: 0;
             left: 0;
-
-            /* THE STRETCH LOGIC */
-            /* scaleX(1.33) stretches the width by 33% to fill 16:9 */
-            /* translateZ(0) keeps your hardware acceleration active */
-            transform: scaleX(1.34) translateZ(0);
-            transform-origin: center;
-            
-            /* Ensures the browser doesn't try to be "smart" and maintain aspect ratio */
-            object-fit: fill;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background: transparent;
         }
     </style>
 </head>
 <body>
-
-    <div id="wrapper">
-        <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
-    </div>
-
-    <script>
-        // Silent refresh every 60 minutes to prevent the lag/crash
-        setInterval(function() {
-            var iframe = document.getElementById('weather-frame');
-            iframe.src = iframe.src;
-        }, 3600000); 
-    </script>
-
+    <div id="shield"></div>
+    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
 </body>
 </html>
