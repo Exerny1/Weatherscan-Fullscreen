@@ -2,42 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="900"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Weatherscan Manassas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherScan Fix</title>
     <style>
-        body, html { 
+        /* Force everything to be transparent EXCEPT the iframe */
+        html, body { 
             margin: 0; 
             padding: 0; 
-            height: 100%; 
-            width: 100%; 
-            overflow: hidden; 
-            background-color: black; 
-        }
-
-        /* This is the logic from the Replit project */
-        .wallpaper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
+            width: 100vw; 
+            height: 100vh; 
+            background-color: transparent !important; 
+            overflow: hidden;
         }
 
         iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border: none;
-            display: block;
+            z-index: 9999; /* Force it to the VERY front */
         }
     </style>
 </head>
 <body>
-
-    <div class="wallpaper">
-        <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
-    </div>
-
+    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
 </body>
 </html>
