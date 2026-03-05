@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WeatherScan HD Fixed</title>
     <style>
+        /* Keeping it transparent to prevent the "Black Background" takeover */
         html, body { 
             margin: 0; 
             padding: 0; 
             width: 100vw; 
             height: 100vh; 
             overflow: hidden; 
-            background-color: black; 
-            cursor: none;
+            background: transparent !important; 
         }
 
         iframe {
@@ -22,31 +19,18 @@
             width: 100%;
             height: 100%;
             border: none;
-
-            /* FORCED 16:9 STRETCH LOGIC */
-            object-fit: fill; 
-            transform: scaleX(1.34) translateZ(0);
+            
+            /* STRETCH + HARDWARE HACK COMBINED */
+            /* translateZ(0) is what stopped your refresh/black screen */
+            /* scaleX(1.34) is what stretches it to 16:9 */
+            transform: translateZ(0) scaleX(1.34);
             transform-origin: center;
-
-            /* THE HARDWARE HACK - Keeps the TV GPU awake */
-            -webkit-transform: translateZ(0);
+            
             will-change: transform;
-        }
-
-        /* Invisible layer to block any browser 'popups' or hovers */
-        #shield {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            background: transparent;
         }
     </style>
 </head>
 <body>
-    <div id="shield"></div>
     <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
 </body>
 </html>
