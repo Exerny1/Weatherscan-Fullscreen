@@ -2,40 +2,31 @@
 <html>
 <head>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: black;
+        /* Transparent body so NO background color can hide the iframe */
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            background: transparent !important; 
         }
 
-        /* This forces the website into a background "container" */
-        #bg-layer {
+        iframe {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Keeps it behind everything */
-            pointer-events: none; /* Stops the TV from trying to "click" things inside it */
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
             border: none;
+            /* This 'transform' line forces the TV to use its graphics chip 
+               differently, which can sometimes "wake up" a black screen */
+            transform: translateZ(0);
+            will-change: transform;
         }
     </style>
 </head>
 <body>
-
-    <div id="bg-layer">
-        <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
-    </div>
-
-    <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:1;"></div>
-
+    <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
 </body>
 </html>
