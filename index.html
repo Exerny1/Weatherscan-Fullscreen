@@ -1,46 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         html, body { 
             margin: 0; padding: 0; 
             width: 100vw; height: 100vh; 
             overflow: hidden; 
-            background: #000 !important; 
+            background: #000; 
         }
 
-        #scaler {
-            /* We render the site at 80% size to save RAM, 
-               then scale it back up to fill the screen */
+        #viewport-fix {
             width: 100%;
             height: 100%;
-            transform: scale(1.0) translateZ(0); 
-            transform-origin: top left;
+            overflow: hidden;
+            position: relative;
+            /* Forces iOS to create a single, simple composite layer */
+            -webkit-transform: translateZ(0);
         }
 
         iframe {
-            /* THE MAGIC COMBO: Stretch + Hardware Acceleration + Low Quality */
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border: none;
-            
-            /* FORCED 16:9 WARP */
-            transform: scaleX(1.34) translateZ(0);
+
+            /* 1. THE STRETCH */
+            transform: scale(1.34, 1.0) translateZ(0);
             transform-origin: center;
 
-            /* Saves CPU by not 'smoothing' the radar/text */
-            image-rendering: pixelated; 
+            /* 2. PERFORMANCE THROTTLE */
+            /* This '0.99' trick is a lifesaver for iPhone 7 crashes. 
+               It prevents the browser from trying to blend layers. */
+            opacity: 0.99;
             
-            /* Performance Flags */
-            will-change: transform;
-            backface-visibility: hidden;
+            /* 3. BARE MINIMUM GRAPHICS */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: pixelated;
         }
     </style>
 </head>
 <body>
-    <div id="scaler">
-        <iframe src="https://v2.weatherscan.net/?Manassas"></iframe>
+    <div id="viewport-fix">
+        <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
     </div>
+
+    <script>
+        // Emergency Memory Flush
+        // Since the iPhone 7 crashes 'midway', we refresh it silently 
+        // every 15 minutes to dump the accumulated memory (RAM leak).
+        setInterval(function() {
+            const frame = document.getElementById('weather-frame');
+            frame.src = frame.src;
+        }, 900000); 
+    </script>
 </body>
 </html>
