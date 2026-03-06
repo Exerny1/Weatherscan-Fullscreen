@@ -2,36 +2,33 @@
 <html>
 <head>
     <style>
+        /* Transparent background as you requested to keep it clean */
         html, body { 
-            margin: 0; padding: 0; 
-            width: 100vw; height: 100vh; 
+            margin: 0; 
+            padding: 0; 
+            width: 100vw; 
+            height: 100vh; 
             overflow: hidden; 
             background: transparent !important; 
-            /* Forces iOS to prioritize the GPU over the CPU */
-            -webkit-overflow-scrolling: touch; 
         }
 
         iframe {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border: none;
             
-            /* YOUR MAGIC COMBO (Do not touch) */
+            /* THE MAGIC LINE: DO NOT CHANGE */
+            /* translateZ(0) is what stops the refreshing/black screens */
+            /* scaleX(1.34) is your 16:9 stretch */
             transform: translateZ(0) scaleX(1.34);
             transform-origin: center;
             
-            /* ANTI-LAG THROTTLE */
-            /* Tells iPhone: 'Don't try to blend pixels, just draw them raw' */
+            /* The 'low-quality' cheat to help the iPhone 7 and Shield lag */
             image-rendering: pixelated;
             
-            /* EXTRA iOS STABILITY */
-            /* Prevents the 'flicker' when transitions happen on old iPhones */
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            
-            /* Hints to the browser to prepare for motion, 
-               reducing the 'choppy' feeling */
             will-change: transform;
         }
     </style>
