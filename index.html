@@ -3,23 +3,19 @@
 <head>
     <style>
         html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100vw; 
-            height: 100vh; 
+            margin: 0; padding: 0; 
+            width: 100vw; height: 100vh; 
             overflow: hidden; 
             background: #000 !important; 
         }
 
         iframe {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             border: none;
             
-            /* YOUR LOCK-IN REFRESH FIX */
+            /* YOUR HIGH-FPS LOCKS */
             transform: perspective(1000px) translateZ(0) scaleX(1.34);
             transform-origin: center;
             backface-visibility: hidden;
@@ -34,19 +30,18 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // THE 1-HOUR REFRESH FIX
         setInterval(function() {
             var iframe = document.getElementById('weather-frame');
-            
-            // We use the 'location' parameter correctly before the timestamp
-            var cityName = "Manassas";
             var timestamp = new Date().getTime();
             
-            // This format ensures the site reads the city FIRST, then ignores the 't'
-            iframe.src = "https://v2.weatherscan.net/?location=" + cityName + "&t=" + timestamp;
+            /* We put the timestamp after a # 
+               The browser sees: https://v2.weatherscan.net/?Manassas#174138...
+               The emulator only reads: Manassas
+            */
+            iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
             
-            console.log("Memory purged for " + cityName);
-        }, 3600000); // 1 Hour
+            console.log("Memory cleared. Location preserved.");
+        }, 3600000); 
     </script>
 </body>
 </html>
