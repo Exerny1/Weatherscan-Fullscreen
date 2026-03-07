@@ -8,7 +8,7 @@
             width: 100vw; 
             height: 100vh; 
             overflow: hidden; 
-            background: #000 !important; /* Changed to solid black to save iPhone GPU draw calls */
+            background: #000 !important; 
         }
 
         iframe {
@@ -19,16 +19,14 @@
             height: 100%;
             border: none;
             
-            /* THE ENHANCED MAGIC COMBO */
-            /* Added 'perspective' and 'backface-visibility' to unlock more frames */
+            /* YOUR LOCK-IN REFRESH FIX */
             transform: perspective(1000px) translateZ(0) scaleX(1.34);
             transform-origin: center;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             
-            /* High-Speed Rendering */
             image-rendering: pixelated;
-            will-change: transform, contents; /* Tells iPhone to pre-render the radar frames */
+            will-change: transform, contents;
         }
     </style>
 </head>
@@ -36,12 +34,19 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
+        // THE 1-HOUR REFRESH FIX
         setInterval(function() {
             var iframe = document.getElementById('weather-frame');
-            var location = "Manassas"; 
-            iframe.src = "https://v2.weatherscan.net/?" + location + "&t=" + new Date().getTime();
-            console.log("Hourly memory purge complete.");
-        }, 3600000);
+            
+            // We use the 'location' parameter correctly before the timestamp
+            var cityName = "Manassas";
+            var timestamp = new Date().getTime();
+            
+            // This format ensures the site reads the city FIRST, then ignores the 't'
+            iframe.src = "https://v2.weatherscan.net/?location=" + cityName + "&t=" + timestamp;
+            
+            console.log("Memory purged for " + cityName);
+        }, 3600000); // 1 Hour
     </script>
 </body>
 </html>
