@@ -45,7 +45,7 @@
             // This bypasses the 'cache' that usually causes TVs to crash.
             var currentSrc = iframe.src.split('?')[0]; 
             var location = "Manassas"; // Keep your location locked
-            iframe.src = "https://v2.weatherscan.net/?" + location + "&t=" + new Date().getTime();
+            iframe.src = "https://v1.weatherscan.net/?" + location + "&t=" + new Date().getTime();
             
             console.log("Hourly memory purge complete.");
         }, 3600000);
