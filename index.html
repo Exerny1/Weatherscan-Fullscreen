@@ -2,14 +2,13 @@
 <html>
 <head>
     <style>
-        /* Keeping it transparent to prevent background interference */
         html, body { 
             margin: 0; 
             padding: 0; 
             width: 100vw; 
             height: 100vh; 
             overflow: hidden; 
-            background: transparent !important; 
+            background: #000 !important; /* Changed to solid black to save iPhone GPU draw calls */
         }
 
         iframe {
@@ -20,15 +19,16 @@
             height: 100%;
             border: none;
             
-            /* THE MAGIC COMBO */
-            /* 1. translateZ(0) - STOPS BLACK SCREEN/REFRESH GLITCH */
-            /* 2. scaleX(1.34) - STRETCHES TO 16:9 */
-            transform: translateZ(0) scaleX(1.34);
+            /* THE ENHANCED MAGIC COMBO */
+            /* Added 'perspective' and 'backface-visibility' to unlock more frames */
+            transform: perspective(1000px) translateZ(0) scaleX(1.34);
             transform-origin: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             
-            /* Performance throttle for older devices (iPhone 7/Shield) */
+            /* High-Speed Rendering */
             image-rendering: pixelated;
-            will-change: transform;
+            will-change: transform, contents; /* Tells iPhone to pre-render the radar frames */
         }
     </style>
 </head>
@@ -36,17 +36,10 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // THE 1-HOUR AUTO-REFRESH
-        // 3,600,000 ms = 60 minutes
         setInterval(function() {
             var iframe = document.getElementById('weather-frame');
-            
-            // We use a timestamp hack (?t=...) to force a 100% clean refresh
-            // This bypasses the 'cache' that usually causes TVs to crash.
-            var currentSrc = iframe.src.split('?')[0]; 
-            var location = "Manassas"; // Keep your location locked
+            var location = "Manassas"; 
             iframe.src = "https://v2.weatherscan.net/?" + location + "&t=" + new Date().getTime();
-            
             console.log("Hourly memory purge complete.");
         }, 3600000);
     </script>
