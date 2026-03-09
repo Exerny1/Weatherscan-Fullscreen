@@ -6,30 +6,36 @@
             margin: 0; padding: 0; 
             width: 100vw; height: 100vh; 
             overflow: hidden; 
-            background: #000; 
+            background: #000 !important; 
         }
 
-        #weather-frame {
-            /* 1. SHRINK THE SOURCE DIMENSIONS */
-            /* This forces the emulator to render at a lower internal resolution */
-            width: 1280px; 
-            height: 720px;
+        iframe {
+            position: fixed;
+            top: 0; 
+            left: 0;
+            
+            /* 1. SHRINK THE SOURCE (REDUCE RAM FOOTPRINT) */
+            /* We render it at 80% size so the Shield's GPU doesn't choke */
+            width: 80%; 
+            height: 80%;
             border: none;
-
-            /* 2. ZOOM IT BACK UP */
-            /* We use a combination of top/left and transform to center and stretch */
-            position: absolute;
-            top: 50%;
-            left: 50%;
             
-            /* scaleX(1.34) for your aspect ratio, 
-               multiplied by the scale needed to fill the screen height (1.5 for 720p to 1080p) */
-            transform: translate(-50%, -50%) scale(1.5) scaleX(1.34);
+            /* 2. ZOOM BACK UP TO 100% WITHOUT MOVING IT */
+            /* scale(1.25) brings 80% back to 100%. 
+               Then scaleX(1.34) handles your widescreen stretch. */
+            transform: scale(1.25) scaleX(1.34);
             
-            /* 3. OPTIMIZE FOR THE STRETCH */
-            image-rendering: pixelated; /* Keeps text readable even when stretched */
+            /* This is the magic part: it keeps the scaling centered 
+               so the iframe doesn't jump to the left or right */
+            transform-origin: top left;
+            
+            /* 3. OPTIMIZATIONS */
+            image-rendering: pixelated;
             will-change: transform;
             pointer-events: auto;
+            
+            /* Forces the browser to ignore layout changes inside the frame */
+            contain: strict;
         }
     </style>
 </head>
@@ -37,7 +43,7 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Use a full page reload every 60 mins to clear the cache entirely
+        // Full reset every hour to clear memory leaks
         setInterval(function() {
             window.location.reload(true);
         }, 3600000); 
