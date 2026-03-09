@@ -6,27 +6,30 @@
             margin: 0; padding: 0; 
             width: 100vw; height: 100vh; 
             overflow: hidden; 
-            background: #000 !important; 
+            background: #000; 
         }
 
-        iframe {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+        #weather-frame {
+            /* 1. SHRINK THE SOURCE DIMENSIONS */
+            /* This forces the emulator to render at a lower internal resolution */
+            width: 1280px; 
+            height: 720px;
             border: none;
+
+            /* 2. ZOOM IT BACK UP */
+            /* We use a combination of top/left and transform to center and stretch */
+            position: absolute;
+            top: 50%;
+            left: 50%;
             
-            /* STRETCH & GPU LOCK */
-            transform: translate3d(0, 0, 0) scaleX(1.34);
-            transform-origin: center;
+            /* scaleX(1.34) for your aspect ratio, 
+               multiplied by the scale needed to fill the screen height (1.5 for 720p to 1080p) */
+            transform: translate(-50%, -50%) scale(1.5) scaleX(1.34);
             
-            /* THE CRASH FIXES (EXTERNAL CONTROL) */
-            image-rendering: pixelated; 
-            filter: brightness(1.0) contrast(1.1); /* Forces a simple hardware layer */
-            pointer-events: none; /* Stops the browser from "listening" to the iframe */
-            
-            /* Limits the browser's "Paint" area to exactly what you see */
-            contain: strict; 
+            /* 3. OPTIMIZE FOR THE STRETCH */
+            image-rendering: pixelated; /* Keeps text readable even when stretched */
             will-change: transform;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -34,11 +37,10 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Force a total browser memory wipe every 45 minutes
+        // Use a full page reload every 60 mins to clear the cache entirely
         setInterval(function() {
-            console.log("Hard Resetting Browser RAM...");
-            window.location.reload(true); 
-        }, 2700000); 
+            window.location.reload(true);
+        }, 3600000); 
     </script>
 </body>
 </html>
