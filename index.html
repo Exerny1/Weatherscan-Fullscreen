@@ -6,26 +6,26 @@
             margin: 0; padding: 0; 
             width: 100vw; height: 100vh; 
             overflow: hidden; 
-            background: #000; 
+            background: #000 !important; 
         }
 
-        #weather-frame {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+        iframe {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             border: none;
             
-            /* STRETCH TO 16:9 RATIO */
-            /* We make it 134% of the width to crop the black side bars */
-            width: 134vw; 
-            height: 100vh; 
-
-            /* LOCK TO CENTER */
-            transform: translate(-50%, -50%);
+            /* HARDWARE ACCELERATION LOCKS */
+            /* translate3d is more stable on Nvidia Shield than translateZ */
+            transform: perspective(1000px) translate3d(0, 0, 0) scaleX(1.34);
+            transform-origin: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             
-            /* OPTIMIZATIONS FOR SHIELD */
             image-rendering: pixelated;
-            pointer-events: auto;
+            /* Added 'contain' to stop the browser from over-calculating layout */
+            contain: strict;
+            will-change: transform;
         }
     </style>
 </head>
@@ -33,10 +33,20 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Full reset every hour to clear Android TV memory leaks
         setInterval(function() {
-            window.location.reload(); 
-        }, 3600000); 
+            var iframe = document.getElementById('weather-frame');
+            var timestamp = new Date().getTime();
+            
+            // 1. Point to a blank page first to force a RAM flush
+            iframe.src = "about:blank";
+            
+            // 2. Short delay before loading the map back in
+            setTimeout(function() {
+                iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
+                console.log("RAM Cleared & Frame Reset.");
+            }, 100); 
+
+        }, 3600000); // 1 hour interval
     </script>
 </body>
 </html>
