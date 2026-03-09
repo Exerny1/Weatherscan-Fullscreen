@@ -6,20 +6,27 @@
             margin: 0; padding: 0; 
             width: 100vw; height: 100vh; 
             overflow: hidden; 
-            background: #000 !important; 
+            background: #000; 
         }
 
         #weather-frame {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 50%;
+            left: 50%;
             border: none;
             
-            /* No 3D transforms - they eat VRAM over time */
-            zoom: 1.34;
+            /* FORCE 16:9 RATIO (1920x1080 logic) */
+            width: 1920px;
+            height: 1080px;
+
+            /* CENTER AND STRETCH */
+            /* 0.53 fits a 1080p frame into a 1080p screen height-wise */
+            /* 0.70+ starts stretching it horizontally to 16:9 or wider */
+            transform: translate(-50%, -50%) scale(0.6); 
             
-            /* Tell the Shield to prioritize speed over quality */
+            /* PERFORMANCE TIPS FOR SHIELD */
             image-rendering: pixelated;
+            will-change: transform;
         }
     </style>
 </head>
@@ -27,16 +34,10 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Refresh every 20 minutes (1200000ms)
-        // This is the "sweet spot" before the Shield's RAM hits the 1GB limit
-        setTimeout(function() {
-            // 1. Wipe the iframe to signal the browser to release memory
-            document.getElementById('weather-frame').src = "about:blank";
-            
-            // 2. Kill the whole page and start over
-            // This is the only way to 100% clear Android TV cache
-            window.location.reload(true); 
-        }, 1200000); 
+        // Full page refresh every hour to prevent the Shield from lagging
+        setInterval(function() {
+            window.location.reload(); 
+        }, 3600000); 
     </script>
 </body>
 </html>
