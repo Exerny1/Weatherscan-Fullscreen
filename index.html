@@ -15,7 +15,7 @@
             width: 100%; height: 100%;
             border: none;
             
-            /* YOUR HIGH-FPS LOCKS - REVERTED */
+            /* YOUR HIGH-FPS LOCKS */
             transform: perspective(1000px) translateZ(0) scaleX(1.34);
             transform-origin: center;
             backface-visibility: hidden;
@@ -24,7 +24,7 @@
             image-rendering: pixelated;
             will-change: transform, contents;
             
-            /* RE-ENABLED INTERACTION */
+            /* KEEP INTERACTIVE */
             pointer-events: auto;
         }
     </style>
@@ -37,8 +37,9 @@
             var iframe = document.getElementById('weather-frame');
             var timestamp = new Date().getTime();
             
-            /* Soft Refresh: Keeps the location but forces a reload 
-               to help with the Shield's memory build-up. */
+            /* THE SPECIFIC REFRESH YOU WANTED: 
+               Changes the hash (#) so the emulator stays on Manassas 
+               but the browser thinks it's a "new" load to clear cache. */
             iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
             
             console.log("Memory cleared. Location preserved.");
