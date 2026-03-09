@@ -2,40 +2,33 @@
 <html>
 <head>
     <style>
+        /* 1. LOCK THE BACKGROUND */
         html, body { 
             margin: 0; padding: 0; 
             width: 100vw; height: 100vh; 
             overflow: hidden; 
-            background: #000 !important; 
+            background: #000; 
         }
 
+        /* 2. THE SMALLER IFRAME (THE RAM SAVER) */
         iframe {
-            position: fixed;
-            top: 0; 
-            left: 0;
-            
-            /* 1. SHRINK THE SOURCE (REDUCE RAM FOOTPRINT) */
-            /* We render it at 80% size so the Shield's GPU doesn't choke */
-            width: 80%; 
-            height: 80%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             border: none;
             
-            /* 2. ZOOM BACK UP TO 100% WITHOUT MOVING IT */
-            /* scale(1.25) brings 80% back to 100%. 
-               Then scaleX(1.34) handles your widescreen stretch. */
-            transform: scale(1.25) scaleX(1.34);
+            /* Smaller base size = way less memory for the Shield */
+            width: 1280px; 
+            height: 720px;
+
+            /* 3. CENTER & STRETCH BACK TO 16:9 */
+            /* translate(-50%, -50%) keeps it dead center */
+            /* scale(1.5) blows it up to fill 1080p height */
+            /* scaleX(1.34) handles your specific wide-aspect stretch */
+            transform: translate(-50%, -50%) scale(1.5) scaleX(1.34);
             
-            /* This is the magic part: it keeps the scaling centered 
-               so the iframe doesn't jump to the left or right */
-            transform-origin: top left;
-            
-            /* 3. OPTIMIZATIONS */
             image-rendering: pixelated;
-            will-change: transform;
             pointer-events: auto;
-            
-            /* Forces the browser to ignore layout changes inside the frame */
-            contain: strict;
         }
     </style>
 </head>
@@ -43,7 +36,7 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Full reset every hour to clear memory leaks
+        // Full reset every hour to prevent the Shield from lagging out
         setInterval(function() {
             window.location.reload(true);
         }, 3600000); 
