@@ -15,18 +15,17 @@
             left: 50%;
             border: none;
             
-            /* FORCE 16:9 RATIO (1920x1080 logic) */
-            width: 1920px;
-            height: 1080px;
+            /* STRETCH TO 16:9 RATIO */
+            /* We make it 134% of the width to crop the black side bars */
+            width: 134vw; 
+            height: 100vh; 
 
-            /* CENTER AND STRETCH */
-            /* 0.53 fits a 1080p frame into a 1080p screen height-wise */
-            /* 0.70+ starts stretching it horizontally to 16:9 or wider */
-            transform: translate(-50%, -50%) scale(0.6); 
+            /* LOCK TO CENTER */
+            transform: translate(-50%, -50%);
             
-            /* PERFORMANCE TIPS FOR SHIELD */
+            /* OPTIMIZATIONS FOR SHIELD */
             image-rendering: pixelated;
-            will-change: transform;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -34,7 +33,7 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Full page refresh every hour to prevent the Shield from lagging
+        // Full reset every hour to clear Android TV memory leaks
         setInterval(function() {
             window.location.reload(); 
         }, 3600000); 
