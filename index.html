@@ -15,16 +15,17 @@
             width: 100%; height: 100%;
             border: none;
             
-            /* HARDWARE ACCELERATION LOCKS */
-            /* translate3d is more stable on Nvidia Shield than translateZ */
-            transform: perspective(1000px) translate3d(0, 0, 0) scaleX(1.34);
+            /* STRETCH & GPU LOCK */
+            transform: translate3d(0, 0, 0) scaleX(1.34);
             transform-origin: center;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
             
-            image-rendering: pixelated;
-            /* Added 'contain' to stop the browser from over-calculating layout */
-            contain: strict;
+            /* THE CRASH FIXES (EXTERNAL CONTROL) */
+            image-rendering: pixelated; 
+            filter: brightness(1.0) contrast(1.1); /* Forces a simple hardware layer */
+            pointer-events: none; /* Stops the browser from "listening" to the iframe */
+            
+            /* Limits the browser's "Paint" area to exactly what you see */
+            contain: strict; 
             will-change: transform;
         }
     </style>
@@ -33,20 +34,11 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
+        // Force a total browser memory wipe every 45 minutes
         setInterval(function() {
-            var iframe = document.getElementById('weather-frame');
-            var timestamp = new Date().getTime();
-            
-            // 1. Point to a blank page first to force a RAM flush
-            iframe.src = "about:blank";
-            
-            // 2. Short delay before loading the map back in
-            setTimeout(function() {
-                iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
-                console.log("RAM Cleared & Frame Reset.");
-            }, 100); 
-
-        }, 3600000); // 1 hour interval
+            console.log("Hard Resetting Browser RAM...");
+            window.location.reload(true); 
+        }, 2700000); 
     </script>
 </body>
 </html>
