@@ -4,31 +4,26 @@
     <style>
         html, body { 
             margin: 0; padding: 0; 
-            width: 100vw; height: 100vh; 
-            overflow: hidden; 
+            width: 100%; height: 100%; 
             background: #000 !important; 
+            overflow: hidden;
         }
 
         #weather-frame {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
             border: none;
+            width: 75%; /* Lower base width to save RAM */
+            height: 75%; /* Lower base height to save RAM */
             
-            /* FORCE GPU COMPOSITING - Stops CPU from trying to render the map */
-            transform: translate3d(0, 0, 0) scaleX(1.34);
-            transform-origin: center;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+            /* The 'Zoom' trick: Scales the content without the GPU overhead of transforms */
+            zoom: 1.34; 
             
-            /* LOW-QUALITY OPTIMIZATION - Disables expensive anti-aliasing */
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated; 
-            
-            /* PREVENT REPAINTING OVERHEAD */
-            will-change: transform;
-            contain: strict;
+            /* Positioning without 3D transforms */
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            /* Disable all smoothing */
+            image-rendering: pixelated;
         }
     </style>
 </head>
@@ -36,22 +31,11 @@
     <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        // Set to 2 hours (7200000ms) to avoid too many jarring refreshes
-        // but enough to prevent the memory leak from crashing the Shield
+        // Refresh every 30 minutes. 
+        // Frequent small refreshes are better for the Shield than one big crash.
         setInterval(function() {
-            var iframe = document.getElementById('weather-frame');
-            var timestamp = new Date().getTime();
-            
-            /* Hard Reset: We actually clear the src first to force the 
-               browser to dump the previous cache/DOM of the iframe. */
-            iframe.src = "about:blank"; 
-            
-            setTimeout(function() {
-                iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
-                console.log("RAM Flushed. Reloading Manassas...");
-            }, 100); 
-
-        }, 7200000); 
+            window.location.reload(); 
+        }, 1800000); 
     </script>
 </body>
 </html>
