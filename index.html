@@ -30,7 +30,7 @@
     </style>
 </head>
 <body>
-    <iframe id="weather-frame" src="https://v1.weatherscan.net/?Manassas"></iframe>
+    <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
         setInterval(function() {
@@ -40,7 +40,7 @@
             /* THE SPECIFIC REFRESH YOU WANTED: 
                Changes the hash (#) so the emulator stays on Manassas 
                but the browser thinks it's a "new" load to clear cache. */
-            iframe.src = "https://v1.weatherscan.net/?Manassas#" + timestamp;
+            iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
             
             console.log("Memory cleared. Location preserved.");
         }, 3600000); 
