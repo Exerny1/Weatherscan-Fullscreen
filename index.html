@@ -7,65 +7,38 @@
             width: 100vw; height: 100vh; 
             overflow: hidden; 
             background: #000 !important; 
-            touch-action: none;
-            -webkit-text-size-adjust: none;
-        }
-
-        /* CONTAINER TO ALIGN THE LOW-RES BOX */
-        .responsive-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
         }
 
         iframe {
-            /* TRICK INTERACTION SIZE */
-            width: 1920px; 
-            height: 1080px;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             border: none;
             
-            /* CRUNCH FRAMING & APPLY WIDESCREEN STRETCH */
-            zoom: 0.5;
-            transform: scaleX(1.34);
+            /* KEEPING THE EXACT TRANSFORMS AND ASPECT RATIO */
+            transform: perspective(1000px) translateZ(0) scaleX(1.34) scale(0.75);
             transform-origin: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             
-            /* KEEP RENDER PERFORMANCE FAST */
-            image-rendering: crisp-edges;
             image-rendering: pixelated;
-            image-rendering: -webkit-optimize-contrast;
-            
-            -webkit-transform-style: flat;
-            transform-style: flat;
-            will-change: auto;
+            will-change: transform, contents;
             
             pointer-events: auto;
         }
     </style>
 </head>
 <body>
-    <div class="responsive-container">
-        <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
-    </div>
+    <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
 
     <script>
-        /* REFRESH TO CLEAN MEMORY LEAKS ONCE AN HOUR */
         setInterval(function() {
             var iframe = document.getElementById('weather-frame');
-            if (iframe) {
-                var timestamp = new Date().getTime();
-                iframe.src = "about:blank"; 
-                
-                setTimeout(function() {
-                    iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
-                    console.log("Memory cleared. Location preserved.");
-                }, 200);
-            }
+            var timestamp = new Date().getTime();
+            
+            iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
+            
+            console.log("Memory cleared. Location preserved.");
         }, 3600000); 
     </script>
 </body>
