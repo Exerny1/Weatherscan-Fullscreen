@@ -11,76 +11,60 @@
             -webkit-text-size-adjust: none;
         }
 
-        iframe {
+        /* THE LOW-QUALITY WRAPPER BOX */
+        .responsive-container {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        iframe {
+            /* FORCE A LOW INTERNAL RESOLUTION (960x540)
+               The site inside now thinks it's running on a much smaller screen,
+               which drastically cuts down asset rendering sizes and RAM consumption. */
+            width: 960px; 
+            height: 540px;
             border: none;
             
-            /* STRETCH LAYOUT WITH ZERO RENDER CACHING */
-            transform: scaleX(1.34);
+            /* BLOW UP THE LOW-RES IMAGE TO FILL THE SCREEN
+               We combine your 1.34x widescreen stretch factor with the 2x scale 
+               needed to bring 540p up to full screen size (960 * 2 = 1920). */
+            transform: scale(2.68, 2.0); 
             transform-origin: center;
             
-            /* CRITICAL RAM FIX: 
-              Removed perspective, translateZ(0), and backface-visibility.
-              These properties force the phone to create a dedicated GPU hardware layer.
-              While it makes animations smooth, it consumes 3x to 4x more RAM, 
-              which instantly triggers the infinite iOS refresh loop.
-            */
+            /* Force the phone to use cheap, blocky pixel blending 
+               instead of smooth, expensive anti-aliasing */
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: -webkit-optimize-contrast;
+            
             -webkit-transform-style: flat;
             transform-style: flat;
-            
-            /* Prevents the browser from pre-allocating massive texture buffers */
-            will-change: auto; 
-            
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: pixelated;
+            will-change: auto;
             pointer-events: auto;
         }
     </style>
 </head>
 <body>
-    <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
+    <div class="responsive-container">
+        <iframe id="weather-frame" src="https://v2.weatherscan.net/?Manassas"></iframe>
+    </div>
 
     <script>
-        /* RAM CONSERVATION MONITOR:
-          Forces the browser thread to yield frequently. This keeps the execution
-          loop light and prevents the script execution memory pool from overflowing.
-        */
-        (function() {
-            var lastRepaint = 0;
-            var frameCutoff = 1000 / 24; // Limit processing overhead to a cinematic 24 FPS
-
-            function throttleGraphics(currentTime) {
-                if (!lastRepaint) lastRepaint = currentTime;
-                var duration = currentTime - lastRepaint;
-
-                if (duration < frameCutoff) {
-                    requestAnimationFrame(throttleGraphics);
-                    return;
-                }
-
-                lastRepaint = currentTime - (duration % frameCutoff);
-                requestAnimationFrame(throttleGraphics);
-            }
-            requestAnimationFrame(throttleGraphics);
-        })();
-
-        /* SOFT RELOAD INTERVAL:
-          Instead of letting the phone crash and refresh the entire page (which leaks RAM),
-          this forcefully zeroes out the iframe container once an hour to dump the cache clean.
-        */
+        // Flush the frame cache once an hour to keep the memory footprint low
         setInterval(function() {
             var iframe = document.getElementById('weather-frame');
             if (iframe) {
                 var timestamp = new Date().getTime();
-                
-                // Completely detach the source first to force WebKit to deallocate layout strings
                 iframe.src = "about:blank"; 
-                
                 setTimeout(function() {
                     iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
-                    console.log("RAM flushed cleanly via hard source reset.");
                 }, 200);
             }
         }, 3600000); 
