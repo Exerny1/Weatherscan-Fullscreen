@@ -11,7 +11,7 @@
             -webkit-text-size-adjust: none;
         }
 
-        /* THE LOW-QUALITY WRAPPER BOX */
+        /* CONTAINER TO ALIGN THE LOW-RES BOX */
         .responsive-container {
             position: fixed;
             top: 0;
@@ -25,21 +25,17 @@
         }
 
         iframe {
-            /* FORCE A LOW INTERNAL RESOLUTION (960x540)
-               The site inside now thinks it's running on a much smaller screen,
-               which drastically cuts down asset rendering sizes and RAM consumption. */
-            width: 960px; 
-            height: 540px;
+            /* TRICK INTERACTION SIZE */
+            width: 1920px; 
+            height: 1080px;
             border: none;
             
-            /* BLOW UP THE LOW-RES IMAGE TO FILL THE SCREEN
-               We combine your 1.34x widescreen stretch factor with the 2x scale 
-               needed to bring 540p up to full screen size (960 * 2 = 1920). */
-            transform: scale(2.68, 2.0); 
+            /* CRUNCH FRAMING & APPLY WIDESCREEN STRETCH */
+            zoom: 0.5;
+            transform: scaleX(1.34);
             transform-origin: center;
             
-            /* Force the phone to use cheap, blocky pixel blending 
-               instead of smooth, expensive anti-aliasing */
+            /* KEEP RENDER PERFORMANCE FAST */
             image-rendering: crisp-edges;
             image-rendering: pixelated;
             image-rendering: -webkit-optimize-contrast;
@@ -47,6 +43,7 @@
             -webkit-transform-style: flat;
             transform-style: flat;
             will-change: auto;
+            
             pointer-events: auto;
         }
     </style>
@@ -57,14 +54,16 @@
     </div>
 
     <script>
-        // Flush the frame cache once an hour to keep the memory footprint low
+        /* REFRESH TO CLEAN MEMORY LEAKS ONCE AN HOUR */
         setInterval(function() {
             var iframe = document.getElementById('weather-frame');
             if (iframe) {
                 var timestamp = new Date().getTime();
                 iframe.src = "about:blank"; 
+                
                 setTimeout(function() {
                     iframe.src = "https://v2.weatherscan.net/?Manassas#" + timestamp;
+                    console.log("Memory cleared. Location preserved.");
                 }, 200);
             }
         }, 3600000); 
