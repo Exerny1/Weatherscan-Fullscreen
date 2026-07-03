@@ -21,11 +21,11 @@
 
             border: none;
 
-            /* Fill 16:9 screens better */
+            /* Stretch for widescreen displays */
             transform: scaleX(1.34);
             transform-origin: center center;
 
-            /* Lower memory overhead */
+            /* Lightweight settings */
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
 
@@ -37,29 +37,22 @@
 
     <iframe
         id="weather-frame"
-        src="https://v2.weatherscan.net/?Manassas"
-        loading="eager">
+        src="https://v2.weatherscan.net/?Manassas">
     </iframe>
 
     <script>
         const iframe = document.getElementById("weather-frame");
 
         function refreshWeatherScan() {
-            console.log("Clearing iframe memory...");
+            iframe.src =
+                "https://v2.weatherscan.net/?Manassas#" +
+                Date.now();
 
-            iframe.src = "about:blank";
-
-            setTimeout(() => {
-                iframe.src =
-                    "https://v2.weatherscan.net/?Manassas#" +
-                    Date.now();
-
-                console.log("Memory cleared. Location preserved.");
-            }, 2000);
+            console.log("WeatherScan refreshed.");
         }
 
-        /* Refresh every 2 hours */
-        setInterval(refreshWeatherScan, 7200000);
+        /* Refresh every 30 minutes */
+        setInterval(refreshWeatherScan, 1800000);
     </script>
 
 </body>
