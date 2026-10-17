@@ -28,13 +28,13 @@
 
         #weather-frame {
             position: absolute;
-            /* Force the iframe base size to 4:3 dimensions relative to viewport height */
+            /* Base size at 4:3 relative to viewport height */
             height: 100vh;
             width: calc(100vh * (4 / 3));
             border: none;
 
-            /* Stretch precisely from 4:3 to 16:9 widescreen */
-            transform: scaleX(1.3333);
+            /* Stretch to 16:9 widescreen and scale up slightly to fill bottom dead space */
+            transform: scale(1.05) scaleX(1.3333);
             transform-origin: center center;
 
             /* Performance & memory optimization */
